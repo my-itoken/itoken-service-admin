@@ -24,8 +24,12 @@ public class TbSysUserServiceImpl implements TbSysUserService {
     public TbSysUser login(String loginCode, String plantPassword) {
         Example example = new Example(TbSysUser.class);
         example.createCriteria().andEqualTo("loginCode",loginCode);
-        List<TbSysUser> tbSysUsers = tbSysUserMapper.selectByExample(example);
-        System.out.println(tbSysUsers);
+        TbSysUser tbSysUser = tbSysUserMapper.selectOneByExample(example);
+        if (tbSysUser!=null){
+            if (tbSysUser.getPassword().equals(DigestUtils.md5DigestAsHex(plantPassword.getBytes()))){
+                return tbSysUser;
+            }
+        }
         return null;
     }
 }
